@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'store'
 ]
 
 MIDDLEWARE = [
@@ -76,8 +77,13 @@ WSGI_APPLICATION = 'digikala.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'digikala',
+        'USER': 'root',
+        'PASSWORD': '123',
+        'PORT': '',
+        'default-character-set': 'utf8_general_ci',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES', default_storage_engine =INNODB;"}
     }
 }
 
