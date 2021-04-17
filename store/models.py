@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -49,7 +51,34 @@ class Product(models.Model):
     groupProduct = models.ForeignKey(GroupProduct, null=False, on_delete=models.PROTECT, default='',
                                      verbose_name='گروه محصولات')
     product_name = models.CharField('نام محصول', max_length=50, null=False, blank=False)
-    item = models.ManyToManyField(Item, verbose_name='آیتم ها')
+
+    item = models.ManyToManyField(Item, through='ProductItemValue', verbose_name='محصول')
 
     def __str__(self):
         return self.product_name
+
+
+class ProductItemValue(models.Model):
+    class Meta:
+        verbose_name = 'مقدار ایتم محصول'
+        verbose_name_plural = 'مقادیر ایتم های محصولات'
+
+    item = models.ForeignKey(Item, verbose_name='ایتم', on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, verbose_name='محصولات', on_delete=models.PROTECT)
+    value = models.CharField(max_length=64, verbose_name='مقادیر')
+
+    def __str__(self):
+        return self.product.product_name + "-" + self.item.item_name + "-" + self.value
+
+
+class OrderMaster(models.Model):
+    class Meta:
+        verbose_name = 'سفارش محصول'
+        verbose_name_plural = 'سفارشات محصولات'
+
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT, verbose_name='مشتری')
+    create_at = models.DateTimeField(default=datetime.now(), verbose_name='تاریخ ایجاد')
+    productItemValue = models.ManyToManyField(ProductItemValue,verbose_name='مقادیر محصول ایتم')
+
+    def __str__(self):
+        return self.customer.customer_family
